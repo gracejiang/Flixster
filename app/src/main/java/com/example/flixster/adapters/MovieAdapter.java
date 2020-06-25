@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,28 +61,39 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         TextView tvTitle;
         TextView tvOverview;
+        TextView tvDate;
         ImageView ivPoster;
+        RatingBar ratingBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
+            tvDate = itemView.findViewById(R.id.tvDate);
             ivPoster = itemView.findViewById(R.id.ivPoster);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
         }
 
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
-            String imageUrl;
+            tvDate.setText("| " + movie.getReleaseDate());
 
+            // add image
+            String imageUrl;
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 imageUrl = movie.getBackdropPath();
             } else {
                 imageUrl = movie.getPosterPath();
             }
 
-            Glide.with(context).load(imageUrl).into(ivPoster);
+            Glide.with(context).load(imageUrl).placeholder(R.drawable.placeholder).into(ivPoster);
+
+            // add rating
+            ratingBar.setRating((float) (movie.getRating() / 2.0));
+            ratingBar.setIsIndicator(true);
+
         }
     }
 

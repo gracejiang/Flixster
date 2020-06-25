@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -28,13 +31,26 @@ public class MainActivity extends AppCompatActivity {
 
     List<Movie> movies = new ArrayList<>();
 
+    EditText etSearch;
+    Button btnSearch;
+    Spinner spinner;
+    RecyclerView rvMovies;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView rvMovies = findViewById(R.id.rvMovies);
+        etSearch = findViewById(R.id.etSearch);
+        btnSearch = findViewById(R.id.btnSearch);
+        spinner = findViewById(R.id.spinner);
+        rvMovies = findViewById(R.id.rvMovies);
 
+        createAdapter();
+
+    }
+
+    private void createAdapter() {
         // create the adapter
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
 
