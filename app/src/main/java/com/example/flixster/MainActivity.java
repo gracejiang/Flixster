@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         rvMovies = findViewById(R.id.rvMovies);
 
         spinnerSort.setOnItemSelectedListener(this);
+
         createMovieAdapter();
         createSortAdapter();
 
@@ -67,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 // user reset their search query, so bring all results back to screen
-                if (etSearch.getText().equals("")) {
+                if (etSearch.getText().equals("") && movies.size() > 0) {
                     updateMovieAdapter(movies);
-                } else {
+                } else if (movies.size() > 0) {
                     // user searches for a query
                     String phrase = etSearch.getText().toString();
                     List<Movie> searchResults = search(phrase);
@@ -81,7 +83,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void afterTextChanged(Editable editable) {
             }
         });
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "NOW LANDSCAPE", Toast.LENGTH_LONG);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "NOW PORTRAIT", Toast.LENGTH_LONG);
+        }
     }
 
     // search for specific movie
@@ -117,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray results = jsonObject.getJSONArray("results");
-                    Log.i(TAG, "Results: " + results.toString());
+                    // Log.i(TAG, "Results: " + results.toString());
 
                     // read in movies from json array to List<Movie> movies
                     movies.addAll(Movie.fromJsonArray(results));
@@ -141,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d(TAG, "onFailure");
             }
         });
+
     }
 
     // update adapter given a list of movies
@@ -164,13 +176,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         // sort by title A-Z
-        if (position == 0 && changedSpinner) {
+        if (position == 0 && movies.size() > 0) {
             Collections.sort(movies);
             updateMovieAdapter(movies);
         }
 
         // sort by rating
-        else if (position == 1) {
+        else if (position == 1 && movies.size() > 0) {
             Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
             Collections.sort(movies, ratingCompare);
             updateMovieAdapter(movies);
@@ -178,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         // sort by date
-        else if (position == 2) {
+        else if (position == 2 && movies.size() > 0) {
             Movie.DateCompare dateCompare = new Movie.DateCompare();
             Collections.sort(movies, dateCompare);
             updateMovieAdapter(movies);
