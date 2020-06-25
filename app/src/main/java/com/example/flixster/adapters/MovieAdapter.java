@@ -78,7 +78,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
-            tvDate.setText("| " + movie.getReleaseDate());
+            tvDate.setText("| " + movie.getReleaseDateString());
 
             // add image
             String imageUrl;

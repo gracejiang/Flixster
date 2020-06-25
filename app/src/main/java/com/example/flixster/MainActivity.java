@@ -9,7 +9,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -24,11 +25,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.Headers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
     public static final String TAG = "MainActivity";
@@ -36,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> movies = new ArrayList<>();
 
     EditText etSearch;
-    Spinner spinner;
+    Spinner spinnerSort;
     RecyclerView rvMovies;
+
+    boolean changedSpinner = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +49,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         etSearch = findViewById(R.id.etSearch);
-        spinner = findViewById(R.id.filter);
+        spinnerSort = findViewById(R.id.spinnerSort);
         rvMovies = findViewById(R.id.rvMovies);
 
-
-        createAdapter();
+        spinnerSort.setOnItemSelectedListener(this);
+        createMovieAdapter();
+        createSortAdapter();
 
         // search feature
 
-        // resets if edit text is empty
+        // resets if edit text is empty, otherwise call search function automatically
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -61,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // user reset their search query, so bring all results back to screen
                 if (etSearch.getText().equals("")) {
-                    createAdapter();
-                    Toast.makeText(getApplicationContext(), "THIS WORKS!", Toast.LENGTH_SHORT).show();
+                    updateMovieAdapter(movies);
                 } else {
+                    // user searches for a query
                     String phrase = etSearch.getText().toString();
                     List<Movie> searchResults = search(phrase);
-                    updateAdapter(searchResults);
-                    Toast.makeText(getApplicationContext(), phrase + " " + searchResults.size(), Toast.LENGTH_SHORT).show();
+                    updateMovieAdapter(searchResults);
                 }
             }
 
@@ -90,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
         return searchResults;
     }
 
-    // create adapter to movies
-    private void createAdapter() {
-
+    // import all movie results from api and create a new adapter
+    private void createMovieAdapter() {
         movies = new ArrayList<>();
 
         // create the adapter
@@ -119,7 +123,10 @@ public class MainActivity extends AppCompatActivity {
                     movies.addAll(Movie.fromJsonArray(results));
 
                     // uncomment to check if movies properly read in
-                    Log.i(TAG, "Movies: " + movies.size());
+                    // Log.i(TAG, "Movies: " + movies.size());
+
+                    // sort movies
+                    Collections.sort(movies);
 
                     movieAdapter.notifyDataSetChanged();
 
@@ -136,12 +143,52 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateAdapter(List<Movie> searchResults) {
+    // update adapter given a list of movies
+    private void updateMovieAdapter(List<Movie> searchResults) {
         final MovieAdapter movieAdapter = new MovieAdapter(this, searchResults);
         rvMovies.setAdapter(movieAdapter);
         rvMovies.setLayoutManager(new LinearLayoutManager(this));
         movieAdapter.notifyDataSetChanged();
     }
 
+    // create adapter for sort-by options
+    private void createSortAdapter() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSort.setAdapter(adapter);
 
+    }
+
+    // sort-by item selections
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        // sort by title A-Z
+        if (position == 0 && changedSpinner) {
+            Collections.sort(movies);
+            updateMovieAdapter(movies);
+        }
+
+        // sort by rating
+        else if (position == 1) {
+            Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
+            Collections.sort(movies, ratingCompare);
+            updateMovieAdapter(movies);
+            changedSpinner = true;
+        }
+
+        // sort by date
+        else if (position == 2) {
+            Movie.DateCompare dateCompare = new Movie.DateCompare();
+            Collections.sort(movies, dateCompare);
+            updateMovieAdapter(movies);
+            changedSpinner = true;
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
