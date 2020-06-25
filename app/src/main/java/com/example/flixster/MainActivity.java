@@ -5,10 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -32,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> movies = new ArrayList<>();
 
     EditText etSearch;
-    Button btnSearch;
     Spinner spinner;
     RecyclerView rvMovies;
 
@@ -42,15 +45,56 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         etSearch = findViewById(R.id.etSearch);
-        btnSearch = findViewById(R.id.btnSearch);
-        spinner = findViewById(R.id.spinner);
+        spinner = findViewById(R.id.filter);
         rvMovies = findViewById(R.id.rvMovies);
+
 
         createAdapter();
 
+        // search feature
+
+        // resets if edit text is empty
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (etSearch.getText().equals("")) {
+                    createAdapter();
+                    Toast.makeText(getApplicationContext(), "THIS WORKS!", Toast.LENGTH_SHORT).show();
+                } else {
+                    String phrase = etSearch.getText().toString();
+                    List<Movie> searchResults = search(phrase);
+                    updateAdapter(searchResults);
+                    Toast.makeText(getApplicationContext(), phrase + " " + searchResults.size(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
     }
 
+    // search for specific movie
+    private List<Movie> search(String phrase) {
+        List<Movie> searchResults = new ArrayList<>();
+        for (Movie m : movies) {
+            if (m.getTitle().toLowerCase().contains(phrase.toLowerCase())) {
+                searchResults.add(m);
+            }
+        }
+        return searchResults;
+    }
+
+    // create adapter to movies
     private void createAdapter() {
+
+        movies = new ArrayList<>();
+
         // create the adapter
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
 
@@ -91,4 +135,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void updateAdapter(List<Movie> searchResults) {
+        final MovieAdapter movieAdapter = new MovieAdapter(this, searchResults);
+        rvMovies.setAdapter(movieAdapter);
+        rvMovies.setLayoutManager(new LinearLayoutManager(this));
+        movieAdapter.notifyDataSetChanged();
+    }
+
+
 }
