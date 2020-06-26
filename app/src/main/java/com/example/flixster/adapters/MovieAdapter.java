@@ -69,6 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         TextView tvDate;
         ImageView ivPoster;
         RatingBar ratingBar;
+        TextView tvGenres;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,12 +81,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             tvDate = itemView.findViewById(R.id.tvDate);
             ivPoster = itemView.findViewById(R.id.ivPoster);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            tvGenres = itemView.findViewById(R.id.tvGenres);
         }
 
         public void bind(Movie movie) {
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
             tvDate.setText("| " + movie.getReleaseDateString());
+            tvGenres.setText(movie.getGenresString().toUpperCase());
 
             // add image
             String imageUrl;

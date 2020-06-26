@@ -1,5 +1,10 @@
 package com.example.flixster.models;
 
+import android.util.Log;
+
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +15,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Headers;
 
 @Parcel
 public class Movie implements Comparable<Movie> {
 
+    // same for all movies
+    static Map<Integer, String> genresMap = new HashMap<>();
+
+    // individual movie properties
     String posterPath;
     String backdropPath;
     String title;
@@ -22,6 +35,9 @@ public class Movie implements Comparable<Movie> {
     double rating;
     String releaseDateString;
     Date releaseDate;
+    int id;
+    List<String> genres = new ArrayList<>();
+    String genresString = "";
 
     public Movie() { }
 
@@ -31,16 +47,63 @@ public class Movie implements Comparable<Movie> {
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
         rating = jsonObject.getInt("vote_average");
+
+        // release date
+        releaseDate = stringToDate(jsonObject.getString("release_date"));
         releaseDateString = jsonObject.getString("release_date");
-        releaseDate = stringToDate(releaseDateString);
+
+        id = jsonObject.getInt("id");
+
+        // read in genres
+        JSONArray genresJsonArray = jsonObject.getJSONArray("genre_ids");
+        for (int i = 0; i < genresJsonArray.length(); i++) {
+            int genreId = genresJsonArray.getInt(i);
+            String genreName = genresMap.get(genreId);
+
+            genres.add(genreName);
+            genresString = genresString + genreName + ", ";
+        }
+
+        if (genresString.length() > 1) {
+            genresString = genresString.substring(0, genresString.length() - 2);
+        }
+
+        // uncomment to check if genres correctly read in
+        // Log.i("Movie", title + " " + genres);
+        // Log.i("Movie", title + " " + genresString);
+
     }
 
     public static List<Movie> fromJsonArray(JSONArray movieJsonArray) throws JSONException {
+        // read in json arrays
         List<Movie> movies = new ArrayList<>();
         for (int i = 0; i < movieJsonArray.length(); i++) {
             movies.add(new Movie(movieJsonArray.getJSONObject(i)));
         }
         return movies;
+    }
+
+    // initialize genre array
+    public static void initializeGenres() {
+        genresMap.put(28, "Action");
+        genresMap.put(12, "Adventure");
+        genresMap.put(16, "Animation");
+        genresMap.put(35, "Comedy");
+        genresMap.put(80, "Crime");
+        genresMap.put(99, "Documentary");
+        genresMap.put(18, "Drama");
+        genresMap.put(10751, "Family");
+        genresMap.put(14, "Fantasy");
+        genresMap.put(36, "History");
+        genresMap.put(27, "Horror");
+        genresMap.put(10402, "Music");
+        genresMap.put(9648, "Mystery");
+        genresMap.put(10749, "Romance");
+        genresMap.put(878, "Science Fiction");
+        genresMap.put(10770, "TV Movie");
+        genresMap.put(53, "Thriller");
+        genresMap.put(10752, "War");
+        genresMap.put(37, "Western");
     }
 
     private static Date stringToDate(String dateStr) {
@@ -53,6 +116,10 @@ public class Movie implements Comparable<Movie> {
             e.printStackTrace();
         }
         return date;
+    }
+
+    private static String dateToString(Date date) {
+        return date.getMonth() + " " + date.getDate() + " " + date.getYear();
     }
 
     // getter methods
@@ -88,6 +155,18 @@ public class Movie implements Comparable<Movie> {
         return releaseDate;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public String getGenresString() {
+        return genresString;
+    }
+
     // sort by title, ascending
     @Override
     public int compareTo(Movie movie) {
@@ -117,6 +196,7 @@ public class Movie implements Comparable<Movie> {
             return (m1.getReleaseDate().compareTo(m2.getReleaseDate())) * -1;
         }
     }
+
 
 }
 

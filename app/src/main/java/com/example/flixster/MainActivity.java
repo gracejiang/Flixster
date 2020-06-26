@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.adapters.MovieAdapter;
+import com.example.flixster.databinding.ActivityMainBinding;
 import com.example.flixster.models.Movie;
 
 import org.json.JSONArray;
@@ -42,17 +43,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Spinner spinnerSort;
     RecyclerView rvMovies;
 
-    boolean changedSpinner = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         etSearch = findViewById(R.id.etSearch);
         spinnerSort = findViewById(R.id.spinnerSort);
         rvMovies = findViewById(R.id.rvMovies);
-
         spinnerSort.setOnItemSelectedListener(this);
 
         createMovieAdapter();
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     updateMovieAdapter(movies);
                 } else if (movies.size() > 0) {
                     // user searches for a query
-                    String phrase = etSearch.getText().toString();
+                    String phrase = etSearch.getText().toString().toLowerCase();
                     List<Movie> searchResults = search(phrase);
                     updateMovieAdapter(searchResults);
                 }
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Movie> search(String phrase) {
         List<Movie> searchResults = new ArrayList<>();
         for (Movie m : movies) {
-            if (m.getTitle().toLowerCase().contains(phrase.toLowerCase())) {
+            if (m.getTitle().toLowerCase().contains(phrase)) {
                 searchResults.add(m);
             }
         }
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // import all movie results from api and create a new adapter
     private void createMovieAdapter() {
         movies = new ArrayList<>();
+        Movie.initializeGenres();
 
         // create the adapter
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
@@ -156,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     // update adapter given a list of movies
-    private void updateMovieAdapter(List<Movie> searchResults) {
-        final MovieAdapter movieAdapter = new MovieAdapter(this, searchResults);
+    private void updateMovieAdapter(List<Movie> moviesList) {
+        final MovieAdapter movieAdapter = new MovieAdapter(this, moviesList);
         rvMovies.setAdapter(movieAdapter);
         rvMovies.setLayoutManager(new LinearLayoutManager(this));
         movieAdapter.notifyDataSetChanged();
@@ -169,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 R.array.sort_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSort.setAdapter(adapter);
-
     }
 
     // sort-by item selections
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
             Collections.sort(movies, ratingCompare);
             updateMovieAdapter(movies);
-            changedSpinner = true;
         }
 
         // sort by date
@@ -194,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Movie.DateCompare dateCompare = new Movie.DateCompare();
             Collections.sort(movies, dateCompare);
             updateMovieAdapter(movies);
-            changedSpinner = true;
         }
 
     }

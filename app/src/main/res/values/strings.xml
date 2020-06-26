@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Flixster</string>
-
     <string-array name="sort_options">
         <item>Sort By Title A-Z</item>
         <item>Sort By Rating</item>

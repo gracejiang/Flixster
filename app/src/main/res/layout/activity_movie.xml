@@ -22,11 +22,12 @@
         android:id="@+id/movie_details_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_details_title"
+        android:layout_below="@+id/movie_details_genres"
         android:layout_alignParentStart="true"
         android:layout_marginStart="29dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="4dp"
         android:text="TextView"
+        android:textSize="12sp"
         android:textStyle="italic"
         tools:text="Release Date" />
 
@@ -37,8 +38,9 @@
         android:layout_below="@+id/movie_details_rating"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="12dp"
+        android:textSize="12sp"
         tools:text="Britt-Marie, a woman in her sixties, decides to leave her husband and start anew. Having been housewife for most of her life and and living in small backwater town of Borg, there isn't many jobs available and soon she finds herself fending a youth football team." />
 
     <RatingBar
@@ -49,7 +51,7 @@
         android:layout_below="@+id/movie_details_date"
         android:layout_alignParentStart="true"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="6dp" />
 
     <VideoView
         android:id="@+id/movie_details_video"
@@ -59,4 +61,16 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="32dp"
         android:layout_marginTop="23dp" />
+
+    <TextView
+        android:id="@+id/movie_details_genres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="77dp"
+        android:text="Genres"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 </RelativeLayout>
