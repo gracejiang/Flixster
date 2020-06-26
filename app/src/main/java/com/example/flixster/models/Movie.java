@@ -13,10 +13,12 @@ import org.parceler.Parcel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.Headers;
@@ -34,7 +36,7 @@ public class Movie implements Comparable<Movie> {
     String overview;
     double rating;
     String releaseDateString;
-    Date releaseDate;
+    Calendar releaseDate;
     int id;
     List<String> genres = new ArrayList<>();
     String genresString = "";
@@ -50,7 +52,7 @@ public class Movie implements Comparable<Movie> {
 
         // release date
         releaseDate = stringToDate(jsonObject.getString("release_date"));
-        releaseDateString = jsonObject.getString("release_date");
+        releaseDateString = dateToString(releaseDate);
 
         id = jsonObject.getInt("id");
 
@@ -106,20 +108,20 @@ public class Movie implements Comparable<Movie> {
         genresMap.put(37, "Western");
     }
 
-    private static Date stringToDate(String dateStr) {
-        Date date = null;
+    private static Calendar stringToDate(String dateStr) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
         try {
-            date = formatter.parse(dateStr);
-            return date;
+            c.setTime(formatter.parse(dateStr));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return date;
+        return c;
     }
 
-    private static String dateToString(Date date) {
-        return date.getMonth() + " " + date.getDate() + " " + date.getYear();
+    private static String dateToString(Calendar c) {
+        String month = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        return month + " " + c.get(Calendar.DATE) + ", " + c.get(Calendar.YEAR);
     }
 
     // getter methods
@@ -151,7 +153,7 @@ public class Movie implements Comparable<Movie> {
         return releaseDateString;
     }
 
-    public Date getReleaseDate() {
+    public Calendar getReleaseDate() {
         return releaseDate;
     }
 
