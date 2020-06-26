@@ -53,15 +53,6 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="6dp" />
 
-    <VideoView
-        android:id="@+id/movie_details_video"
-        android:layout_width="350dp"
-        android:layout_height="240dp"
-        android:layout_below="@+id/movie_details_overview"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="23dp" />
-
     <TextView
         android:id="@+id/movie_details_genres"
         android:layout_width="wrap_content"
@@ -73,4 +64,13 @@
         android:text="Genres"
         android:textSize="14sp"
         android:textStyle="bold" />
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/movie_details_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_overview"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="23dp" />
+
 </RelativeLayout>
