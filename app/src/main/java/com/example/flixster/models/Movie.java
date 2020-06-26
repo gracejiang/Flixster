@@ -3,6 +3,7 @@ package com.example.flixster.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+@Parcel
 public class Movie implements Comparable<Movie> {
 
     String posterPath;
@@ -21,6 +23,7 @@ public class Movie implements Comparable<Movie> {
     String releaseDateString;
     Date releaseDate;
 
+    public Movie() { }
 
     public Movie(JSONObject jsonObject) throws JSONException {
         posterPath = jsonObject.getString("poster_path");
@@ -54,10 +57,14 @@ public class Movie implements Comparable<Movie> {
 
     // getter methods
     public String getPosterPath() {
+        // to test for placeholder image
+        // return "";
         return String.format("https://image.tmdb.org/t/p/w342/%s", posterPath);
     }
 
     public String getBackdropPath() {
+        // to test for placeholder image
+        // return "";
         return String.format("https://image.tmdb.org/t/p/w342/%s", backdropPath);
     }
 
