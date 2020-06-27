@@ -6,10 +6,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.databinding.ActivityMovieBinding;
@@ -24,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.Headers;
 
 public class MovieActivity extends YouTubeBaseActivity {
@@ -36,6 +39,7 @@ public class MovieActivity extends YouTubeBaseActivity {
     RatingBar rbRating;
     TextView tvOverview;
     YouTubePlayerView playerView;
+    ImageView imageView;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -53,17 +57,19 @@ public class MovieActivity extends YouTubeBaseActivity {
         rbRating = findViewById(R.id.movie_details_rating);
         tvOverview = findViewById(R.id.movie_details_overview);
         playerView = findViewById(R.id.movie_details_player);
+        imageView = findViewById(R.id.movie_details_image);
 
         tvTitle.setText(movie.getTitle());
         tvDate.setText("Release Date: " + movie.getReleaseDateString());
         tvGenres.setText(movie.getGenresString().toUpperCase());
         rbRating.setRating((float) (movie.getRating() / 2.0));
         tvOverview.setText(movie.getOverview());
+        imageView.setVisibility(View.INVISIBLE);
 
         readInVideoUrl(movie);
     }
 
-    private void readInVideoUrl(Movie movie) {
+    private void readInVideoUrl(final Movie movie) {
         final String TAG = "MovieActivity";
         final String apiKey = getString(R.string.default_api_key);
         final String movieId = "" + movie.getId();
@@ -84,8 +90,21 @@ public class MovieActivity extends YouTubeBaseActivity {
                         initializeYouTubeView(videoKey);
                     } else {
                         hideYouTubeView();
+                        imageView.setVisibility(View.VISIBLE);
+                        String imageUrl = movie.getBackdropPath();
+                        if (imageUrl.contains("null")) {
+                            imageUrl = movie.getPosterPath();
+                        }
+
+                        int radius = 20; // corner radius
+                        int margin = 0; // crop margin
+
+                        Glide.with(getApplicationContext())
+                                .load(imageUrl)
+                                .placeholder(R.mipmap.placeholder_foreground)
+                                .transform(new RoundedCornersTransformation(radius, margin))
+                                .into(imageView);
                     }
-                    Log.i(TAG, jsonObject.toString());
                 } catch (JSONException e) {
                     Log.e(TAG, "hit json exception", e);
                     e.printStackTrace();

@@ -25,7 +25,7 @@
         android:layout_below="@+id/movie_details_genres"
         android:layout_marginStart="15dp"
         android:layout_marginTop="6dp"
-        android:layout_toEndOf="@+id/movie_details_player"
+        android:layout_toEndOf="@+id/movie_details_image"
         android:text="TextView"
         android:textSize="12sp"
         android:textStyle="italic"
@@ -38,7 +38,7 @@
         android:layout_below="@+id/movie_details_rating"
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/movie_details_player"
+        android:layout_toEndOf="@+id/movie_details_image"
         android:textSize="14dp"
         tools:text="Britt-Marie, a woman in her sixties, decides to leave her husband and start anew. Having been housewife for most of her life and and living in small backwater town of Borg, there isn't many jobs available and soon she finds herself fending a youth football team." />
 
@@ -50,7 +50,7 @@
         android:layout_below="@+id/movie_details_date"
         android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/movie_details_player" />
+        android:layout_toEndOf="@+id/movie_details_image" />
 
     <TextView
         android:id="@+id/movie_details_genres"
@@ -59,7 +59,7 @@
         android:layout_below="@+id/movie_details_title"
         android:layout_marginStart="15dp"
         android:layout_marginTop="12dp"
-        android:layout_toEndOf="@+id/movie_details_player"
+        android:layout_toEndOf="@+id/movie_details_image"
         android:background="#8E73BF"
         android:paddingLeft="8dp"
         android:paddingTop="2dp"
@@ -75,6 +75,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/movie_details_title"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="12dp" />
+
+    <ImageView
+        android:id="@+id/movie_details_image"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_title"
+        android:adjustViewBounds="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="12dp" />
 
