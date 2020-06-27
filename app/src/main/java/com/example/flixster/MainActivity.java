@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
             // check that json has already been read in
             if (allMovies.size() > 0) {
                 sortBy();
+                filterBy();
             }
         }
 
@@ -251,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
             updateMovieAdapter(currMovies);
         } else if (filterBy == 0) {
             currMovies = allMovies;
+            sortBy();
             updateMovieAdapter(currMovies);
         }
     }
