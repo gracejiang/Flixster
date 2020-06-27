@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> allMovies = new ArrayList<>();
     List<Movie> currMovies = new ArrayList<>();
 
+    int sortBy = 0;
+
     EditText etSearch;
     Spinner spinnerSort;
     Spinner spinnerGenres;
@@ -191,30 +193,39 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-            // sort by title A-Z
-            if (position == 0 && currMovies.size() > 0) {
-                Collections.sort(currMovies);
-                updateMovieAdapter(currMovies);
-            }
 
-            // sort by rating
-            else if (position == 1 && currMovies.size() > 0) {
-                Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
-                Collections.sort(currMovies, ratingCompare);
-                updateMovieAdapter(currMovies);
-            }
-
-            // sort by date
-            else if (position == 2 && currMovies.size() > 0) {
-                Movie.DateCompare dateCompare = new Movie.DateCompare();
-                Collections.sort(currMovies, dateCompare);
-                updateMovieAdapter(currMovies);
+            // check that json has already been read in
+            if (currMovies.size() > 0) {
+                sortBy = position;
+                sortBy();
             }
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
 
+        }
+    }
+
+    // sort by whatever sort is selected
+    private void sortBy() {
+        if (sortBy == 0) {
+            Collections.sort(currMovies);
+            updateMovieAdapter(currMovies);
+        }
+
+        // sort by rating
+        else if (sortBy == 1) {
+            Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
+            Collections.sort(currMovies, ratingCompare);
+            updateMovieAdapter(currMovies);
+        }
+
+        // sort by date
+        else if (sortBy == 2) {
+            Movie.DateCompare dateCompare = new Movie.DateCompare();
+            Collections.sort(currMovies, dateCompare);
+            updateMovieAdapter(currMovies);
         }
     }
 
@@ -247,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 currMovies = filteredMovies;
+                sortBy();
                 updateMovieAdapter(currMovies);
             } else if (position == 0 && allMovies.size() > 0) {
                 currMovies = allMovies;
