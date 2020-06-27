@@ -3,10 +3,14 @@ package com.example.flixster.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -88,7 +92,35 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
             tvDate.setText(movie.getReleaseDateString());
+
             tvGenres.setText(movie.getGenresString().toUpperCase());
+
+            /* TODO code for separate text views for each of the genres
+             * leaving commented out for now in case i come back to work on this feature later
+            */
+            // genres tags
+            /*List<String> allGenres = movie.getGenres();
+            String[] genres = new String[allGenres.size()];
+            for (int i = 0; i < allGenres.size(); i++) {
+                genres[i] = allGenres.get(i);
+            }
+
+            for (int i = 0; i < genres.length; i++ ) {
+                TextView textView = new TextView(context);
+                textView.setText(genres[i].toUpperCase());
+                textView.setBackgroundResource(R.drawable.label);
+                textView.setTextSize(11);
+                textView.setTypeface(null, Typeface.BOLD);
+
+                textView.setTextColor(Color.WHITE);
+                GradientDrawable drawable = (GradientDrawable) textView.getBackground();
+                if (i % 2 == 0) {
+                    drawable.setColor(Color.parseColor("#8266ad"));
+                } else {
+                    drawable.setColor(Color.parseColor("#9882b8"));
+                }
+                layoutGenres.addView(textView);
+            }*/
 
             // add image
             String imageUrl;

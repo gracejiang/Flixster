@@ -46,7 +46,6 @@ public class MovieActivity extends YouTubeBaseActivity {
         setContentView(view);
 
         movie = (Movie) Parcels.unwrap(getIntent().getParcelableExtra(Movie.class.getSimpleName()));
-        // getSupportActionBar().setTitle(movie.getTitle());
 
         tvTitle = findViewById(R.id.movie_details_title);
         tvDate = findViewById(R.id.movie_details_date);
@@ -57,7 +56,7 @@ public class MovieActivity extends YouTubeBaseActivity {
 
         tvTitle.setText(movie.getTitle());
         tvDate.setText("Release Date: " + movie.getReleaseDateString());
-        tvGenres.setText(movie.getGenresString());
+        tvGenres.setText(movie.getGenresString().toUpperCase());
         rbRating.setRating((float) (movie.getRating() / 2.0));
         tvOverview.setText(movie.getOverview());
 

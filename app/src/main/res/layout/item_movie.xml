@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="180dp">
 
     <ImageView
         android:id="@+id/ivPoster"
         android:layout_width="100dp"
-        android:layout_height="160dp"
+        android:layout_height="180dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:contentDescription="Poster Image"
@@ -50,18 +50,6 @@
         tools:text="Release Date" />
 
     <TextView
-        android:id="@+id/tvOverview"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvGenres"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="20dp"
-        android:layout_toEndOf="@+id/ivPoster"
-        android:textSize="12sp"
-        tools:text="After he and his wife are murdered, marine Ray Garrison is resurrected by a team of scientists. Enhanced with nanotechnology, he becomes a superhuman, biotech killing machine—'Bloodshot'. As Ray first trains with fellow super-soldiers, he cannot recall anything from his former life. But when his memories flood back and he remembers the man that killed both him and his wife, he breaks out of the facility to get revenge, only to discover that there's more to the conspiracy than he thought." />
-
-    <TextView
         android:id="@+id/tvGenres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,10 +57,30 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="112dp"
         android:layout_marginTop="56dp"
-        android:text="GENRES"
-        android:textSize="11sp"
+        android:background="#9882b8"
         android:letterSpacing="0.04"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="GENRES"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvOverview"
+        android:layout_width="300dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/tvGenres"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:layout_toEndOf="@+id/ivPoster"
+        android:textSize="12sp"
+        tools:text="After he and his wife are murdered, marine Ray Garrison is resurrected by a team of scientists. Enhanced with nanotechnology, he becomes a superhuman, biotech killing machine—'Bloodshot'. As Ray first trains with fellow super-soldiers, he cannot recall anything from his former life. But when his memories flood back and he remembers the man that killed both him and his wife, he breaks out of the facility to get revenge, only to discover that there's more to the conspiracy than he thought." />
 
     <TextView
         android:id="@+id/divider"
@@ -84,6 +92,16 @@
         android:layout_toEndOf="@+id/ratingBar"
         android:text="|"
         android:textSize="14sp" />
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/layoutGenres"-->
+<!--        android:layout_width="278dp"-->
+<!--        android:layout_height="18dp"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_marginStart="112dp"-->
+<!--        android:layout_marginTop="54dp"-->
+<!--        android:orientation="horizontal"></LinearLayout>-->
 
 
 </RelativeLayout>

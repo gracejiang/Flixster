@@ -28,19 +28,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Headers;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
     public static final String TAG = "MainActivity";
 
-    List<Movie> movies = new ArrayList<>();
+    List<Movie> allMovies = new ArrayList<>();
+    List<Movie> currMovies = new ArrayList<>();
 
     EditText etSearch;
     Spinner spinnerSort;
+    Spinner spinnerGenres;
     RecyclerView rvMovies;
 
     @Override
@@ -53,10 +57,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         etSearch = findViewById(R.id.etSearch);
         spinnerSort = findViewById(R.id.spinnerSort);
         rvMovies = findViewById(R.id.rvMovies);
-        spinnerSort.setOnItemSelectedListener(this);
+        spinnerGenres = findViewById(R.id.spinnerGenres);
 
         createMovieAdapter();
         createSortAdapter();
+        createGenreAdapter();
 
         // search feature
 
@@ -69,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 // user reset their search query, so bring all results back to screen
-                if (etSearch.getText().equals("") && movies.size() > 0) {
-                    updateMovieAdapter(movies);
-                } else if (movies.size() > 0) {
+                if (etSearch.getText().equals("") && currMovies.size() > 0) {
+                    updateMovieAdapter(currMovies);
+                } else if (currMovies.size() > 0) {
                     // user searches for a query
                     String phrase = etSearch.getText().toString().toLowerCase();
                     List<Movie> searchResults = search(phrase);
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // search for specific movie
     private List<Movie> search(String phrase) {
         List<Movie> searchResults = new ArrayList<>();
-        for (Movie m : movies) {
+        for (Movie m : currMovies) {
             if (m.getTitle().toLowerCase().contains(phrase)) {
                 searchResults.add(m);
             }
@@ -108,11 +113,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // import all movie results from api and create a new adapter
     private void createMovieAdapter() {
-        movies = new ArrayList<>();
+        allMovies = new ArrayList<>();
         Movie.initializeGenres();
 
         // create the adapter
-        final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
+        final MovieAdapter movieAdapter = new MovieAdapter(this, allMovies);
 
         // set adapter on the recycler view
         rvMovies.setAdapter(movieAdapter);
@@ -132,14 +137,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     // Log.i(TAG, "Results: " + results.toString());
 
                     // read in movies from json array to List<Movie> movies
-                    movies.addAll(Movie.fromJsonArray(results));
+                    allMovies.addAll(Movie.fromJsonArray(results));
 
                     // uncomment to check if movies properly read in
                     // Log.i(TAG, "Movies: " + movies.size());
 
                     // sort movies
-                    Collections.sort(movies);
-
+                    Collections.sort(allMovies);
+                    currMovies = allMovies;
                     movieAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
@@ -170,35 +175,89 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 R.array.sort_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSort.setAdapter(adapter);
+        spinnerSort.setOnItemSelectedListener(new SortSpinnerClass());
     }
 
-    // sort-by item selections
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        // sort by title A-Z
-        if (position == 0 && movies.size() > 0) {
-            Collections.sort(movies);
-            updateMovieAdapter(movies);
-        }
-
-        // sort by rating
-        else if (position == 1 && movies.size() > 0) {
-            Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
-            Collections.sort(movies, ratingCompare);
-            updateMovieAdapter(movies);
-        }
-
-        // sort by date
-        else if (position == 2 && movies.size() > 0) {
-            Movie.DateCompare dateCompare = new Movie.DateCompare();
-            Collections.sort(movies, dateCompare);
-            updateMovieAdapter(movies);
-        }
-
+    private void createGenreAdapter() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.genre_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGenres.setAdapter(adapter);
+        spinnerGenres.setOnItemSelectedListener(new GenreSpinnerClass());
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+    // handles sort spinner
+    class SortSpinnerClass implements AdapterView.OnItemSelectedListener {
 
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            // sort by title A-Z
+            if (position == 0 && currMovies.size() > 0) {
+                Collections.sort(currMovies);
+                updateMovieAdapter(currMovies);
+            }
+
+            // sort by rating
+            else if (position == 1 && currMovies.size() > 0) {
+                Movie.RatingCompare ratingCompare = new Movie.RatingCompare();
+                Collections.sort(currMovies, ratingCompare);
+                updateMovieAdapter(currMovies);
+            }
+
+            // sort by date
+            else if (position == 2 && currMovies.size() > 0) {
+                Movie.DateCompare dateCompare = new Movie.DateCompare();
+                Collections.sort(currMovies, dateCompare);
+                updateMovieAdapter(currMovies);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    }
+
+
+    // handles genres spinner
+    class GenreSpinnerClass implements AdapterView.OnItemSelectedListener {
+
+        Map<Integer, String> genresMap = new HashMap<>();
+
+        public GenreSpinnerClass() {
+            String[] rawArray = {"", "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary",
+                    "Drama", "Family", "Fantasy", "History",  "Horror", "Music", "Mystery", "Romance",
+                    "Science Fiction", "TV Movie", "Thriller", "War", "Western"};
+
+            for (int i = 0; i < rawArray.length; i++) {
+                genresMap.put(i, rawArray[i]);
+            }
+
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            // filter by genre
+            if (position > 0 && allMovies.size() > 0) {
+                String genre = genresMap.get(position);
+                List<Movie> filteredMovies = new ArrayList<>();
+                for (Movie m : allMovies) {
+                    if (m.isGenre(genre)) {
+                        filteredMovies.add(m);
+                    }
+                }
+                currMovies = filteredMovies;
+                updateMovieAdapter(currMovies);
+            } else if (position == 0 && allMovies.size() > 0) {
+                currMovies = allMovies;
+                updateMovieAdapter(currMovies);
+            }
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
     }
 }

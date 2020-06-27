@@ -124,6 +124,11 @@ public class Movie implements Comparable<Movie> {
         return month + " " + c.get(Calendar.DATE) + ", " + c.get(Calendar.YEAR);
     }
 
+    // filter method
+    public boolean isGenre(String genre) {
+        return genres.contains(genre);
+    }
+
     // getter methods
     public String getPosterPath() {
         // to test for placeholder image

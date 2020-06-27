@@ -40,7 +40,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="31dp"
         android:layout_marginTop="12dp"
-        android:textSize="12sp"
+        android:textSize="14dp"
         tools:text="Britt-Marie, a woman in her sixties, decides to leave her husband and start anew. Having been housewife for most of her life and and living in small backwater town of Borg, there isn't many jobs available and soon she finds herself fending a youth football team." />
 
     <RatingBar
@@ -61,9 +61,15 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="29dp"
         android:layout_marginTop="77dp"
+        android:background="#8E73BF"
         android:text="Genres"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"/>
 
     <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/movie_details_player"
