@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
             // check that json has already been read in
-            if (currMovies.size() > 0) {
+            if (allMovies.size() > 0) {
                 sortBy = position;
                 sortBy();
             }
@@ -248,8 +248,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            // check json already read in
+            if (allMovies.size() <= 0) {
+                return;
+            }
+
             // filter by genre
-            if (position > 0 && allMovies.size() > 0) {
+            if (position > 0) {
                 String genre = genresMap.get(position);
                 List<Movie> filteredMovies = new ArrayList<>();
                 for (Movie m : allMovies) {
@@ -260,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 currMovies = filteredMovies;
                 sortBy();
                 updateMovieAdapter(currMovies);
-            } else if (position == 0 && allMovies.size() > 0) {
+            } else if (position == 0) {
                 currMovies = allMovies;
                 updateMovieAdapter(currMovies);
             }

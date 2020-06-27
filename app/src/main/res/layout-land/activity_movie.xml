@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.flixster.MovieActivity">
+
+    <TextView
+        android:id="@+id/movie_details_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/movie_details_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_genres"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="6dp"
+        android:layout_toEndOf="@+id/movie_details_player"
+        android:text="TextView"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        tools:text="Release Date" />
+
+    <TextView
+        android:id="@+id/movie_details_overview"
+        android:layout_width="296dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_rating"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/movie_details_player"
+        android:textSize="14dp"
+        tools:text="Britt-Marie, a woman in her sixties, decides to leave her husband and start anew. Having been housewife for most of her life and and living in small backwater town of Borg, there isn't many jobs available and soon she finds herself fending a youth football team." />
+
+    <RatingBar
+        android:id="@+id/movie_details_rating"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_date"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/movie_details_player" />
+
+    <TextView
+        android:id="@+id/movie_details_genres"
+        android:layout_width="294dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_title"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/movie_details_player"
+        android:background="#8E73BF"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="Genres"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/movie_details_player"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_details_title"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="12dp" />
+
+</RelativeLayout>
