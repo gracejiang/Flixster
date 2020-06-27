@@ -65,7 +65,6 @@
         android:paddingTop="2dp"
         android:paddingRight="8dp"
         android:paddingBottom="2dp"
-        android:text="Genres"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:textStyle="bold" />

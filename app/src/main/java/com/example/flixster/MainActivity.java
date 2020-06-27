@@ -39,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
     public static final String TAG = "MainActivity";
 
+    Map<Integer, String> genresMap = new HashMap<>();
     List<Movie> allMovies = new ArrayList<>();
     List<Movie> currMovies = new ArrayList<>();
 
-    int sortBy = 0;
+    int sortBy;
+    int filterBy;
 
     EditText etSearch;
     Spinner spinnerSort;
@@ -131,8 +133,6 @@ public class MainActivity extends AppCompatActivity {
         client.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.d(TAG, "onSuccess");
-
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray results = jsonObject.getJSONArray("results");
@@ -147,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
                     // sort movies
                     Collections.sort(allMovies);
                     currMovies = allMovies;
+                    sortBy();
+                    filterBy();
                     movieAdapter.notifyDataSetChanged();
-
                 } catch (JSONException e) {
                     Log.e(TAG, "hit json exception", e);
                     e.printStackTrace();
@@ -193,10 +194,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            sortBy = position;
 
             // check that json has already been read in
             if (allMovies.size() > 0) {
-                sortBy = position;
                 sortBy();
             }
         }
@@ -229,11 +230,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // filter by whatever is selected
+    private void filterBy() {
+        // check json already read in
+        if (allMovies.size() <= 0) {
+            return;
+        }
+
+        // filter by genre
+        if (filterBy > 0) {
+            String genre = genresMap.get(filterBy);
+            List<Movie> filteredMovies = new ArrayList<>();
+            for (Movie m : allMovies) {
+                if (m.isGenre(genre)) {
+                    filteredMovies.add(m);
+                }
+            }
+            currMovies = filteredMovies;
+            sortBy();
+            updateMovieAdapter(currMovies);
+        } else if (filterBy == 0) {
+            currMovies = allMovies;
+            updateMovieAdapter(currMovies);
+        }
+    }
+
 
     // handles genres spinner
     class GenreSpinnerClass implements AdapterView.OnItemSelectedListener {
-
-        Map<Integer, String> genresMap = new HashMap<>();
 
         public GenreSpinnerClass() {
             String[] rawArray = {"", "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary",
@@ -248,28 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-            // check json already read in
-            if (allMovies.size() <= 0) {
-                return;
-            }
-
-            // filter by genre
-            if (position > 0) {
-                String genre = genresMap.get(position);
-                List<Movie> filteredMovies = new ArrayList<>();
-                for (Movie m : allMovies) {
-                    if (m.isGenre(genre)) {
-                        filteredMovies.add(m);
-                    }
-                }
-                currMovies = filteredMovies;
-                sortBy();
-                updateMovieAdapter(currMovies);
-            } else if (position == 0) {
-                currMovies = allMovies;
-                updateMovieAdapter(currMovies);
-            }
-
+            filterBy = position;
+            filterBy();
         }
 
         @Override
