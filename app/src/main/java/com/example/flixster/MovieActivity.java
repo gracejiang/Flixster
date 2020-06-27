@@ -92,9 +92,6 @@ public class MovieActivity extends YouTubeBaseActivity {
                         hideYouTubeView();
                         imageView.setVisibility(View.VISIBLE);
                         String imageUrl = movie.getBackdropPath();
-                        if (imageUrl.contains("null")) {
-                            imageUrl = movie.getPosterPath();
-                        }
 
                         int radius = 20; // corner radius
                         int margin = 0; // crop margin

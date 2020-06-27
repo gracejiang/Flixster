@@ -46,6 +46,9 @@ public class Movie implements Comparable<Movie> {
     public Movie(JSONObject jsonObject) throws JSONException {
         posterPath = jsonObject.getString("poster_path");
         backdropPath = jsonObject.getString("backdrop_path");
+        if (backdropPath.contains("null")) {
+            backdropPath = posterPath;
+        }
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
         rating = jsonObject.getInt("vote_average");
